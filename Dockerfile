@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Microsoft ODBC Driver for SQL Server
 RUN curl -sSL -O https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb \
     && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb \
-    && apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18  --no-install-recommends \
+    && apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18=18.4.1.1-1  --no-install-recommends \
     && sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && locale-gen \
     && pecl install sqlsrv pdo_sqlsrv \
     && rm -rf /var/lib/apt/lists/*
