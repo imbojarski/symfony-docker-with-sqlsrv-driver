@@ -22,14 +22,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         file \
         gettext \
         git \
+        locales \
+        unixodbc-dev \
+        make\
+         apt-transport-https \
         && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y locales unixodbc-dev make \
-        && sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
-        && locale-gen
+# Install Microsoft ODBC Driver for SQL Server
+RUN curl -sSL -O https://packages.microsoft.com/config/debian/$(grep VERSION_ID /etc/os-release | cut -d '"' -f 2 | cut -d '.' -f 1)/packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
 
-RUN pecl install sqlsrv
-RUN pecl install pdo_sqlsrv
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18  --no-install-recommends
+
+RUN sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && locale-gen
+
+RUN pecl install sqlsrv pdo_sqlsrv
+
 RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 
 RUN set -eux; \
