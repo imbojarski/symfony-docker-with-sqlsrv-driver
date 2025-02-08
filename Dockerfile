@@ -33,7 +33,8 @@ RUN curl -sSL -O https://packages.microsoft.com/config/debian/12/packages-micros
     && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb \
     && apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18  --no-install-recommends \
     && sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen && locale-gen \
-    && pecl install sqlsrv pdo_sqlsrv
+    && pecl install sqlsrv pdo_sqlsrv \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 
